@@ -1,0 +1,693 @@
+.gacha {
+  color: white;
+  padding: 2rem 0;
+  text-align: center;
+  animation: fadeIn 0.8s ease-out;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.gacha h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gacha-container {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  padding: 3rem;
+  border-radius: 24px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.gacha-container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+  animation: float 6s ease-in-out infinite;
+}
+
+.gacha-info {
+  margin-bottom: 2.5rem;
+  font-size: 1.2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.gacha-info p {
+  margin: 0.8rem 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+}
+
+.gacha-info strong {
+  color: #ffd700;
+  font-size: 1.3em;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.gacha-buttons {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.gacha-btn {
+  padding: 1.5rem 3rem;
+  font-size: 1.3rem;
+  font-weight: 800;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  color: white;
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  border: 2px solid transparent;
+}
+
+.gacha-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.gacha-btn:hover::before {
+  width: 500px;
+  height: 500px;
+}
+
+.gacha-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.gacha-btn span {
+  position: relative;
+  z-index: 1;
+}
+
+.single-pull {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: rgba(102, 126, 234, 0.5);
+}
+
+.single-pull:hover:not(:disabled) {
+  transform: translateY(-8px) scale(1.05);
+  box-shadow: 0 15px 50px rgba(102, 126, 234, 0.6);
+  border-color: rgba(102, 126, 234, 0.8);
+}
+
+.multi-pull {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  border-color: rgba(245, 87, 108, 0.5);
+}
+
+.multi-pull:hover:not(:disabled) {
+  transform: translateY(-8px) scale(1.05);
+  box-shadow: 0 15px 50px rgba(245, 87, 108, 0.6);
+  border-color: rgba(245, 87, 108, 0.8);
+}
+
+.gacha-result {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  border: 2px solid rgba(102, 126, 234, 0.3);
+  position: relative;
+  z-index: 1;
+  animation: slideIn 0.5s ease-out;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.gacha-result h2 {
+  margin-bottom: 1.5rem;
+  color: #ffd700;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.error-message {
+  background: rgba(244, 67, 54, 0.2);
+  color: #ffcdd2;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  border: 2px solid rgba(244, 67, 54, 0.4);
+  position: relative;
+  z-index: 1;
+}
+
+.photos-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: clamp(0.6rem, 1.5vw, 1.2rem);
+  margin: 1rem 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.photo-card-result {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 3/4;
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+.photo-card-result:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+  border-color: rgba(102, 126, 234, 0.6);
+}
+
+.photo-card-result img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.photo-card-result.featured {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.photo-card-result.featured img {
+  height: 400px;
+}
+
+.rarity-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  color: white;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.rarity-badge.large {
+  font-size: 1.2rem;
+  padding: 0.75rem 1.5rem;
+}
+
+.single-result {
+  margin: 1rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.photo-name {
+  padding: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.balance-update {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.balance-update p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+}
+
+.balance-update strong {
+  color: #ffd700;
+  font-size: 1.2em;
+}
+
+@media (max-width: 768px) {
+  .gacha-container {
+    padding: 2rem 1.5rem;
+  }
+  
+  .gacha-buttons {
+    flex-direction: column;
+  }
+  
+  .gacha-btn {
+    width: 100%;
+    padding: 1.2rem 2rem;
+    font-size: 1.1rem;
+  }
+
+  .photos-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .photo-card-result.featured {
+    max-width: 100%;
+  }
+
+  .photo-card-result.featured img {
+    height: 300px;
+  }
+}
+
+/* ============================================
+   HIỆU ỨNG METEOR GIỐNG GENSHIN WISH SIMULATOR
+   ============================================ */
+
+.meteor-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-out;
+  overflow: hidden;
+}
+
+/* Skip Button */
+.skip-animation-btn {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  z-index: 10000;
+  transition: all 0.3s;
+  backdrop-filter: blur(10px);
+}
+
+.skip-animation-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+}
+
+/* Meteor Container */
+.meteor-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Meteor Trail - Vệt sáng rơi xuống */
+.meteor-trail {
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 120%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--rarity-color) 20%,
+    var(--rarity-color) 80%,
+    transparent 100%
+  );
+  box-shadow: 
+    0 0 30px var(--rarity-color),
+    0 0 60px var(--rarity-color),
+    0 0 100px var(--rarity-color);
+  animation: meteorFall 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  z-index: 2;
+}
+
+@keyframes meteorFall {
+  0% {
+    top: -20%;
+    opacity: 0;
+    transform: translateX(-50%) scaleY(0.5);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    top: 50%;
+    opacity: 1;
+    transform: translateX(-50%) scaleY(1);
+  }
+}
+
+/* Meteor Core - Lõi sáng */
+.meteor-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(
+    circle,
+    white 0%,
+    var(--rarity-color) 50%,
+    transparent 100%
+  );
+  border-radius: 50%;
+  box-shadow: 
+    0 0 40px var(--rarity-color),
+    0 0 80px var(--rarity-color),
+    0 0 120px var(--rarity-color);
+  animation: meteorCorePulse 1.5s ease-in-out;
+  z-index: 3;
+}
+
+@keyframes meteorCorePulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* Meteor Sparkles - Tia lửa */
+.meteor-sparkles {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.sparkle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: var(--rarity-color);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--rarity-color);
+  animation: sparkleFloat 1.5s ease-out forwards;
+  animation-delay: var(--delay);
+}
+
+@keyframes sparkleFloat {
+  0% {
+    transform: translate(-50%, -50%) translateX(0) translateY(0) scale(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) 
+      translateX(var(--x, 0))
+      translateY(var(--y, 0))
+      scale(1);
+    opacity: 0;
+  }
+}
+
+/* Meteor Glow - Ánh sáng nền */
+.meteor-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(
+    circle,
+    var(--rarity-color) 0%,
+    transparent 70%
+  );
+  filter: blur(60px);
+  opacity: 0.6;
+  animation: meteorGlowPulse 1.5s ease-in-out;
+  z-index: 0;
+}
+
+@keyframes meteorGlowPulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+}
+
+/* Wish Reveal Container */
+.wish-reveal-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Wish Card */
+.wish-card {
+  position: relative;
+  width: clamp(350px, 50vw, 500px);
+  max-width: 90vw;
+  background: linear-gradient(
+    135deg,
+    rgba(20, 20, 30, 0.98),
+    rgba(30, 30, 50, 0.98)
+  );
+  border: 4px solid var(--rarity-color);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 
+    0 0 50px var(--rarity-color),
+    0 0 100px var(--rarity-color),
+    0 20px 60px rgba(0, 0, 0, 0.8);
+  animation: wishCardAppear 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 2;
+}
+
+@keyframes wishCardAppear {
+  0% {
+    transform: scale(0.5) rotateY(180deg);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+.wish-card-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(
+    circle,
+    var(--rarity-color) 0%,
+    transparent 70%
+  );
+  filter: blur(50px);
+  opacity: 0.5;
+  z-index: 0;
+  animation: wishGlowPulse 2s ease-in-out infinite;
+}
+
+@keyframes wishGlowPulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+}
+
+.wish-card-content {
+  position: relative;
+  z-index: 1;
+  padding: 2rem;
+}
+
+.wish-card-image-wrapper {
+  width: 100%;
+  aspect-ratio: 4/3;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.wish-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.wish-card-info {
+  text-align: center;
+}
+
+.wish-rarity-badge {
+  display: inline-block;
+  background: var(--rarity-color);
+  color: white;
+  padding: 1rem 2.5rem;
+  border-radius: 12px;
+  font-size: 2rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  box-shadow: 
+    0 0 30px var(--rarity-color),
+    0 4px 15px rgba(0, 0, 0, 0.5);
+  margin-bottom: 1rem;
+  letter-spacing: 3px;
+  animation: badgePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes badgePop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.wish-collection-name {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+/* Wish Particles */
+.wish-particles {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.wish-particle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--rarity-color);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  box-shadow: 0 0 20px var(--rarity-color);
+  animation: wishParticleFloat 2.5s ease-out forwards;
+  animation-delay: var(--delay);
+}
+
+@keyframes wishParticleFloat {
+  0% {
+    transform: translate(-50%, -50%) translateX(0) translateY(0) scale(0);
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) 
+      translateX(var(--x, 0))
+      translateY(var(--y, 0))
+      scale(1.5);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .skip-animation-btn {
+    top: 1rem;
+    right: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .wish-card {
+    width: 90vw;
+    padding: 1.5rem;
+  }
+
+  .wish-rarity-badge {
+    font-size: 1.5rem;
+    padding: 0.75rem 2rem;
+  }
+}

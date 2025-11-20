@@ -1,0 +1,458 @@
+.gallery {
+  color: white;
+  padding: 2rem 0;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.gallery h1 {
+  text-align: center;
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gallery-description {
+  text-align: center;
+  margin-bottom: 3rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.1rem;
+}
+
+.gallery-loading {
+  text-align: center;
+  color: white;
+  font-size: 1.5rem;
+  padding: 3rem;
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.photo-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.photo-card.owned {
+  cursor: pointer;
+}
+
+.photo-card.owned:hover {
+  cursor: pointer;
+}
+
+.photo-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+  opacity: 0;
+  transition: opacity 0.4s;
+  z-index: 1;
+}
+
+.photo-card:hover::before {
+  opacity: 1;
+}
+
+.photo-card:hover:not(.locked) {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+  border-color: rgba(102, 126, 234, 0.6);
+}
+
+.photo-card.locked:hover {
+  transform: translateY(-5px) scale(1.01);
+}
+
+.photo-rarity {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  z-index: 10;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: white;
+}
+
+.photo-card.locked .photo-rarity {
+  opacity: 0.7;
+  filter: grayscale(50%);
+}
+
+.photo-image {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s;
+}
+
+.photo-card:hover:not(.locked) .photo-image {
+  transform: scale(1.1);
+}
+
+.photo-card.locked {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.photo-card.locked .photo-image {
+  filter: blur(8px) grayscale(90%) brightness(0.4);
+  opacity: 0.6;
+  transition: filter 0.3s, opacity 0.3s;
+}
+
+.photo-card.locked:hover .photo-image {
+  filter: blur(6px) grayscale(85%) brightness(0.5);
+}
+
+.photo-card.locked:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.photo-card.locked::before {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6));
+  opacity: 0.8;
+}
+
+.photo-card.owned {
+  border-color: rgba(102, 126, 234, 0.4);
+  opacity: 1;
+}
+
+.photo-card.owned::before {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(102, 126, 234, 0.2));
+}
+
+.photo-card.owned .photo-image {
+  filter: none;
+  opacity: 1;
+}
+
+.locked-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 5;
+  pointer-events: none;
+  width: 100%;
+  padding: 1rem;
+}
+
+.lock-icon {
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 0.75rem;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.8));
+  animation: lockPulse 2s ease-in-out infinite;
+}
+
+@keyframes lockPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+.locked-overlay p {
+  color: white;
+  font-weight: 800;
+  font-size: 1.2rem;
+  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.5);
+  margin: 0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.quantity-indicator {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #ffd700;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  z-index: 10;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+  border: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+.collection-name {
+  color: #8b9aff;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+.photo-info {
+  padding: 1.5rem;
+  color: white;
+  position: relative;
+  z-index: 2;
+}
+
+.photo-info p {
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Rarity Badges với game style */
+.rarity-N {
+  background: linear-gradient(135deg, #757575, #616161);
+  color: white;
+  box-shadow: 0 0 15px rgba(117, 117, 117, 0.5);
+}
+
+.rarity-C {
+  background: linear-gradient(135deg, #4caf50, #388e3c);
+  color: white;
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+}
+
+.rarity-R {
+  background: linear-gradient(135deg, #2196f3, #1976d2);
+  color: white;
+  box-shadow: 0 0 15px rgba(33, 150, 243, 0.5);
+}
+
+.rarity-SR {
+  background: linear-gradient(135deg, #9c27b0, #7b1fa2);
+  color: white;
+  box-shadow: 0 0 20px rgba(156, 39, 176, 0.6);
+}
+
+.rarity-SSR {
+  background: linear-gradient(135deg, #ff9800, #f57c00);
+  color: white;
+  box-shadow: 0 0 20px rgba(255, 152, 0, 0.6);
+}
+
+.rarity-UR {
+  background: linear-gradient(135deg, #f44336, #d32f2f);
+  color: white;
+  box-shadow: 0 0 25px rgba(244, 67, 54, 0.7);
+}
+
+.rarity-L {
+  background: linear-gradient(135deg, #ffd700, #ff8c00);
+  color: white;
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+  animation: glow 2s ease-in-out infinite;
+}
+
+.rarity-X {
+  background: linear-gradient(135deg, #212121, #000000);
+  color: white;
+  border: 2px solid;
+  border-image: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3) 1;
+  box-shadow: 0 0 35px rgba(255, 0, 0, 0.8), 0 0 50px rgba(255, 0, 0, 0.4);
+  animation: glow 1.5s ease-in-out infinite;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+/* Photo View Modal */
+.photo-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(10px);
+  animation: fadeIn 0.3s ease-out;
+  padding: 2rem;
+}
+
+.photo-modal-content {
+  background: linear-gradient(135deg, rgba(26, 26, 46, 0.98), rgba(30, 30, 60, 0.98));
+  backdrop-filter: blur(30px);
+  border-radius: 24px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: hidden;
+  position: relative;
+  border: 2px solid rgba(102, 126, 234, 0.4);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.8);
+  animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.photo-modal-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  transition: all 0.3s;
+  font-size: 1.8rem;
+  font-weight: bold;
+  z-index: 10;
+}
+
+.photo-modal-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: rotate(90deg) scale(1.1);
+}
+
+.photo-modal-image-container {
+  width: 100%;
+  max-height: 70vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.photo-modal-image {
+  max-width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  display: block;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.photo-modal-info {
+  padding: 2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.photo-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.photo-modal-rarity {
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.photo-modal-quantity {
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 215, 0, 0.2);
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  border-radius: 12px;
+  color: #ffd700;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.photo-modal-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.photo-modal-details p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.photo-modal-details strong {
+  color: #8b9aff;
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .photo-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .photo-image {
+    height: 220px;
+  }
+
+  .photo-modal-overlay {
+    padding: 1rem;
+  }
+
+  .photo-modal-content {
+    max-width: 95vw;
+    max-height: 95vh;
+  }
+
+  .photo-modal-image-container {
+    max-height: 60vh;
+  }
+
+  .photo-modal-image {
+    max-height: 60vh;
+  }
+
+  .photo-modal-info {
+    padding: 1.5rem;
+  }
+
+  .photo-modal-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .photo-modal-details {
+    grid-template-columns: 1fr;
+  }
+}
