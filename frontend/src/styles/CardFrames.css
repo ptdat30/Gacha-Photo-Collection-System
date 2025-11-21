@@ -1,0 +1,609 @@
+/* ============================================
+   KHUNG THẺ THEO CẤP ĐỘ HIẾM - ÁNH SÁNG & HÀO QUANG
+   ============================================ */
+
+/* N (Nháp) - Đen Trắng */
+.frame-n {
+  border: 2px dashed #9e9e9e !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.frame-n .photo-image-wrapper,
+.frame-n .listing-image-wrapper,
+.frame-n .photo-wrapper {
+  filter: grayscale(50%);
+  transition: filter 0.3s ease;
+}
+
+.frame-n:hover .photo-image-wrapper,
+.frame-n:hover .listing-image-wrapper,
+.frame-n:hover .photo-wrapper {
+  filter: grayscale(0%);
+}
+
+/* C (Thường) - Neon Tĩnh */
+.frame-c {
+  border: 3px solid #4caf50 !important;
+  background: rgba(76, 175, 80, 0.1) !important;
+  position: relative;
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.4);
+}
+
+.frame-c.cyan {
+  border-color: #00bcd4 !important;
+  background: rgba(0, 188, 212, 0.1) !important;
+  box-shadow: 0 0 15px rgba(0, 188, 212, 0.4);
+}
+
+/* R (Hiếm) - Xanh Dương Quét */
+.frame-r {
+  border: 3px solid #2196f3 !important;
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.15), rgba(25, 118, 210, 0.15)) !important;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(33, 150, 243, 0.4);
+}
+
+.frame-r::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.6) 50%,
+    transparent 70%
+  );
+  animation: shimmer 3s ease-in-out infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+/* SR (Siêu Hiếm) - Tím Hô Hấp */
+.frame-sr {
+  border: 4px solid #9c27b0 !important;
+  background: rgba(156, 39, 176, 0.1) !important;
+  position: relative;
+  animation: breathingGlow 2s ease-in-out infinite;
+}
+
+@keyframes breathingGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(156, 39, 176, 0.5);
+    border-color: #9c27b0;
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(156, 39, 176, 0.9);
+    border-color: #ba68c8;
+  }
+}
+
+/* SSR (Squad) - Cam Dòng Chảy */
+.frame-ssr {
+  border: 4px solid transparent !important;
+  background: rgba(255, 152, 0, 0.1) !important;
+  position: relative;
+  background-clip: padding-box;
+}
+
+.frame-ssr::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  background: linear-gradient(
+    90deg,
+    #ff9800,
+    #ffb74d,
+    #ff9800,
+    #ffb74d,
+    #ff9800
+  );
+  background-size: 200% 100%;
+  border-radius: inherit;
+  z-index: -1;
+  animation: flowingGradient 3s linear infinite;
+  opacity: 0.9;
+  box-shadow: 0 0 20px rgba(255, 152, 0, 0.5);
+}
+
+@keyframes flowingGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+/* UR (Cực Phẩm) - RGB Gamer */
+.frame-ur {
+  border: 5px solid transparent !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+  position: relative;
+  overflow: visible !important;
+  background-clip: padding-box;
+}
+
+.frame-ur::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  background: conic-gradient(
+    from 0deg,
+    #ff0000,
+    #ff7f00,
+    #ffff00,
+    #00ff00,
+    #0000ff,
+    #4b0082,
+    #9400d3,
+    #ff0000
+  );
+  border-radius: inherit;
+  z-index: -1;
+  animation: rainbowRotate 2s linear infinite;
+  opacity: 0.9;
+  box-shadow: 
+    0 0 20px rgba(255, 0, 0, 0.6),
+    0 0 40px rgba(0, 255, 0, 0.4),
+    0 0 60px rgba(0, 0, 255, 0.4);
+}
+
+/* Sparkles effect for UR */
+.frame-ur::after {
+  content: '✨';
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.5rem;
+  z-index: 100;
+  animation: sparkleFloat 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.frame-ur .photo-image-wrapper::after,
+.frame-ur .listing-image-wrapper::after,
+.frame-ur .photo-wrapper::after {
+  content: '✨';
+  position: absolute;
+  bottom: -15px;
+  left: 20%;
+  font-size: 1rem;
+  z-index: 100;
+  animation: sparkleFloat 2.5s ease-in-out infinite 0.5s;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.frame-ur .photo-image-wrapper::before,
+.frame-ur .listing-image-wrapper::before,
+.frame-ur .photo-wrapper::before {
+  content: '✨';
+  position: absolute;
+  bottom: -15px;
+  right: 20%;
+  font-size: 1rem;
+  z-index: 100;
+  animation: sparkleFloat 2.3s ease-in-out infinite 1s;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+@keyframes rainbowRotate {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes sparkleFloat {
+  0%, 100% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-20px) translateX(10px) scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* L (Huyền Thoại) - Vàng Huyền Ảo */
+.frame-l {
+  border: 4px solid #ffd700 !important;
+  background: rgba(255, 215, 0, 0.1) !important;
+  position: relative;
+  overflow: visible !important;
+  animation: mysticalGlow 3s ease-in-out infinite;
+}
+
+.frame-l::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 215, 0, 0.4),
+    rgba(255, 215, 0, 0.1),
+    transparent 70%
+  );
+  border-radius: inherit;
+  z-index: -1;
+  animation: mysticalPulse 2s ease-in-out infinite;
+  opacity: 0.8;
+}
+
+.frame-l::after {
+  content: '✨';
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.5rem;
+  z-index: 100;
+  animation: mysticalFloat 3s ease-in-out infinite;
+  pointer-events: none;
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 1));
+}
+
+.frame-l .photo-image-wrapper::before,
+.frame-l .listing-image-wrapper::before,
+.frame-l .photo-wrapper::before {
+  content: '⭐';
+  position: absolute;
+  top: -10px;
+  left: 10%;
+  font-size: 1rem;
+  z-index: 100;
+  animation: mysticalFloat 2.5s ease-in-out infinite 0.5s;
+  pointer-events: none;
+  opacity: 0.9;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8));
+}
+
+.frame-l .photo-image-wrapper::after,
+.frame-l .listing-image-wrapper::after,
+.frame-l .photo-wrapper::after {
+  content: '⭐';
+  position: absolute;
+  top: -10px;
+  right: 10%;
+  font-size: 1rem;
+  z-index: 100;
+  animation: mysticalFloat 2.8s ease-in-out infinite 1s;
+  pointer-events: none;
+  opacity: 0.9;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8));
+}
+
+@keyframes mysticalGlow {
+  0%, 100% {
+    box-shadow: 
+      0 0 20px rgba(255, 215, 0, 0.6),
+      0 0 40px rgba(255, 215, 0, 0.4),
+      inset 0 0 20px rgba(255, 215, 0, 0.1);
+    border-color: #ffd700;
+  }
+  50% {
+    box-shadow: 
+      0 0 30px rgba(255, 215, 0, 0.9),
+      0 0 60px rgba(255, 215, 0, 0.6),
+      inset 0 0 30px rgba(255, 215, 0, 0.2);
+    border-color: #ffed4e;
+  }
+}
+
+@keyframes mysticalPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+@keyframes mysticalFloat {
+  0%, 100% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0.9;
+  }
+  25% {
+    transform: translateY(-15px) translateX(5px) rotate(10deg);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-25px) translateX(-5px) rotate(-10deg);
+    opacity: 0.8;
+  }
+  75% {
+    transform: translateY(-15px) translateX(5px) rotate(5deg);
+    opacity: 1;
+  }
+}
+
+
+/* X (Bí Mật) - Đỉnh Cao Glassmorphism Holographic */
+.frame-x {
+  border: 3px solid transparent !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  position: relative;
+  overflow: visible !important;
+  background-clip: padding-box;
+  animation: xUltimateGlow 3s ease-in-out infinite;
+}
+
+.frame-x::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 0, 150, 0.8),
+    rgba(0, 255, 255, 0.8),
+    rgba(255, 255, 0, 0.8),
+    rgba(0, 255, 150, 0.8),
+    rgba(150, 0, 255, 0.8),
+    rgba(255, 0, 150, 0.8)
+  );
+  border-radius: inherit;
+  z-index: -1;
+  animation: xHolographicRotate 4s linear infinite, xPulse 2s ease-in-out infinite;
+  opacity: 0.9;
+  box-shadow: 
+    0 0 30px rgba(255, 0, 150, 0.6),
+    0 0 50px rgba(0, 255, 255, 0.5),
+    0 0 70px rgba(255, 255, 0, 0.4);
+}
+
+.frame-x::after {
+  content: '✨';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2rem;
+  z-index: 100;
+  animation: xSparkleFloat 2s ease-in-out infinite;
+  pointer-events: none;
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 1));
+}
+
+.frame-x .photo-image-wrapper::before,
+.frame-x .listing-image-wrapper::before,
+.frame-x .photo-wrapper::before {
+  content: '💎';
+  position: absolute;
+  top: -15px;
+  left: 15%;
+  font-size: 1.2rem;
+  z-index: 100;
+  animation: xSparkleFloat 2.3s ease-in-out infinite 0.3s;
+  pointer-events: none;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.9));
+}
+
+.frame-x .photo-image-wrapper::after,
+.frame-x .listing-image-wrapper::after,
+.frame-x .photo-wrapper::after {
+  content: '💎';
+  position: absolute;
+  top: -15px;
+  right: 15%;
+  font-size: 1.2rem;
+  z-index: 100;
+  animation: xSparkleFloat 2.5s ease-in-out infinite 0.6s;
+  pointer-events: none;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.9));
+}
+
+.frame-x .photo-image-wrapper,
+.frame-x .listing-image-wrapper,
+.frame-x .photo-wrapper {
+  position: relative;
+  z-index: 2;
+  box-shadow: 
+    inset 0 0 30px rgba(255, 255, 255, 0.2),
+    0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+@keyframes xUltimateGlow {
+  0%, 100% {
+    box-shadow: 
+      0 0 30px rgba(255, 255, 255, 0.4),
+      inset 0 0 30px rgba(255, 255, 255, 0.15),
+      0 0 50px rgba(138, 43, 226, 0.3),
+      0 0 70px rgba(75, 0, 130, 0.2);
+  }
+  25% {
+    box-shadow: 
+      0 0 40px rgba(255, 0, 150, 0.5),
+      inset 0 0 40px rgba(255, 0, 150, 0.2),
+      0 0 60px rgba(255, 0, 150, 0.4),
+      0 0 80px rgba(255, 0, 150, 0.3);
+  }
+  50% {
+    box-shadow: 
+      0 0 40px rgba(0, 255, 255, 0.5),
+      inset 0 0 40px rgba(0, 255, 255, 0.2),
+      0 0 60px rgba(0, 255, 255, 0.4),
+      0 0 80px rgba(0, 255, 255, 0.3);
+  }
+  75% {
+    box-shadow: 
+      0 0 40px rgba(255, 255, 0, 0.5),
+      inset 0 0 40px rgba(255, 255, 0, 0.2),
+      0 0 60px rgba(255, 255, 0, 0.4),
+      0 0 80px rgba(255, 255, 0, 0.3);
+  }
+}
+
+@keyframes xHolographicRotate {
+  0% {
+    filter: hue-rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes xPulse {
+  0%, 100% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes xSparkleFloat {
+  0%, 100% {
+    transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+    opacity: 0.9;
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px) rotate(90deg) scale(1.2);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-30px) translateX(-10px) rotate(180deg) scale(1.1);
+    opacity: 0.8;
+  }
+  75% {
+    transform: translateY(-20px) translateX(10px) rotate(270deg) scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* Hover effects for all frames */
+.frame-n:hover {
+  border-color: #bdbdbd;
+  box-shadow: 0 0 10px rgba(158, 158, 158, 0.3);
+}
+
+.frame-c:hover {
+  box-shadow: 0 0 25px rgba(76, 175, 80, 0.6);
+  transform: translateY(-2px);
+}
+
+.frame-c.cyan:hover {
+  box-shadow: 0 0 25px rgba(0, 188, 212, 0.6);
+}
+
+.frame-r:hover {
+  box-shadow: 0 0 25px rgba(33, 150, 243, 0.7);
+  transform: translateY(-2px);
+}
+
+.frame-sr:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 0 50px rgba(156, 39, 176, 1);
+}
+
+.frame-ssr:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 0 35px rgba(255, 152, 0, 0.7);
+}
+
+.frame-ur:hover {
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 
+    0 0 30px rgba(255, 0, 0, 0.8),
+    0 0 50px rgba(0, 255, 0, 0.6),
+    0 0 70px rgba(0, 0, 255, 0.6);
+}
+
+.frame-l:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 
+    0 0 40px rgba(255, 215, 0, 1),
+    0 0 60px rgba(255, 215, 0, 0.6),
+    inset 0 0 30px rgba(255, 215, 0, 0.2);
+}
+
+.frame-x:hover {
+  transform: translateY(-5px) scale(1.03);
+  animation: xUltimateGlow 1.5s ease-in-out infinite;
+}
+
+.frame-x:hover::before {
+  animation: xHolographicRotate 2s linear infinite, xPulse 1s ease-in-out infinite;
+  box-shadow: 
+    0 0 40px rgba(255, 0, 150, 0.8),
+    0 0 60px rgba(0, 255, 255, 0.7),
+    0 0 80px rgba(255, 255, 0, 0.6),
+    0 0 100px rgba(0, 255, 150, 0.5);
+}
+
+.frame-x:hover .photo-image-wrapper,
+.frame-x:hover .listing-image-wrapper,
+.frame-x:hover .photo-wrapper {
+  box-shadow: 
+    inset 0 0 40px rgba(255, 255, 255, 0.3),
+    0 0 30px rgba(255, 255, 255, 0.5);
+}
+
+/* Ensure content is above frame effects */
+.frame-n .photo-image-wrapper,
+.frame-n .listing-image-wrapper,
+.frame-n .photo-wrapper,
+.frame-c .photo-image-wrapper,
+.frame-c .listing-image-wrapper,
+.frame-c .photo-wrapper,
+.frame-r .photo-image-wrapper,
+.frame-r .listing-image-wrapper,
+.frame-r .photo-wrapper,
+.frame-sr .photo-image-wrapper,
+.frame-sr .listing-image-wrapper,
+.frame-sr .photo-wrapper,
+.frame-ssr .photo-image-wrapper,
+.frame-ssr .listing-image-wrapper,
+.frame-ssr .photo-wrapper,
+.frame-ur .photo-image-wrapper,
+.frame-ur .listing-image-wrapper,
+.frame-ur .photo-wrapper,
+.frame-l .photo-image-wrapper,
+.frame-l .listing-image-wrapper,
+.frame-l .photo-wrapper,
+.frame-x .photo-image-wrapper,
+.frame-x .listing-image-wrapper,
+.frame-x .photo-wrapper {
+  position: relative;
+  z-index: 2;
+}
+

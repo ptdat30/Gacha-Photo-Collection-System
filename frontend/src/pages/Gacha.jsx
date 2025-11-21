@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import axios from 'axios'
+import AuthModal from '../components/AuthModal'
 import './Gacha.css'
 
 function Gacha() {
-  const { user, token } = useAuth()
+  const { user, token, isAuthenticated } = useAuth()
+  const [showAuthModal, setShowAuthModal] = useState(false)
   const [isPulling, setIsPulling] = useState(false)
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
@@ -72,8 +74,8 @@ function Gacha() {
   }
 
   const handleSinglePull = async () => {
-    if (!user) {
-      alert('Vui lòng đăng nhập để quay gacha')
+    if (!isAuthenticated || !user) {
+      setShowAuthModal(true)
       return
     }
 
@@ -128,8 +130,8 @@ function Gacha() {
   }
 
   const handleMultiPull = async () => {
-    if (!user) {
-      alert('Vui lòng đăng nhập để quay gacha')
+    if (!isAuthenticated || !user) {
+      setShowAuthModal(true)
       return
     }
 
@@ -176,6 +178,113 @@ function Gacha() {
     }
   }
 
+  const handleSinglePullWithCoins = async () => {
+    if (!isAuthenticated || !user) {
+      setShowAuthModal(true)
+      return
+    }
+
+    const COIN_COST = 50
+    if (coinBalance < COIN_COST) {
+      alert(`Không đủ coin để quay! (Cần ${COIN_COST} coin)`)
+      return
+    }
+
+    setIsPulling(true)
+    setError('')
+    setResult(null)
+    setShowMeteor(false)
+    setAnimationPhase('idle')
+
+    try {
+      const response = await axios.post(
+        'http://localhost:8080/api/gacha/single-coin',
+        {},
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'X-User-Id': user.userId
+          }
+        }
+      )
+
+      if (response.data.photo) {
+        const photo = response.data.photo
+        
+        // Chơi hiệu ứng meteor
+        await playMeteorAnimation(photo)
+        
+        setResult({
+          photo: photo,
+          ticketBalance: response.data.ticketBalance,
+          coinBalance: response.data.coinBalance,
+          isMulti: false
+        })
+        setTicketBalance(response.data.ticketBalance)
+        setCoinBalance(response.data.coinBalance)
+        
+        // Trigger custom event để các trang khác refresh inventory
+        window.dispatchEvent(new CustomEvent('inventoryUpdated'))
+      } else {
+        setError(response.data.message || 'Có lỗi xảy ra')
+      }
+    } catch (error) {
+      setError(error.response?.data?.message || 'Có lỗi xảy ra khi quay gacha')
+    } finally {
+      setIsPulling(false)
+    }
+  }
+
+  const handleMultiPullWithCoins = async () => {
+    if (!isAuthenticated || !user) {
+      setShowAuthModal(true)
+      return
+    }
+
+    const COIN_COST = 450
+    if (coinBalance < COIN_COST) {
+      alert(`Không đủ coin để quay 10! (Cần ${COIN_COST} coin)`)
+      return
+    }
+
+    setIsPulling(true)
+    setError('')
+    setResult(null)
+
+    try {
+      const response = await axios.post(
+        'http://localhost:8080/api/gacha/multi-coin',
+        {},
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'X-User-Id': user.userId
+          }
+        }
+      )
+
+      if (response.data.success) {
+        setResult({
+          photos: response.data.photos,
+          ticketBalance: response.data.ticketBalance,
+          coinBalance: response.data.coinBalance,
+          isMulti: true
+        })
+        setTicketBalance(response.data.ticketBalance)
+        setCoinBalance(response.data.coinBalance)
+        
+        // Trigger custom event để các trang khác refresh inventory
+        window.dispatchEvent(new CustomEvent('inventoryUpdated'))
+      } else {
+        setError(response.data.message || 'Có lỗi xảy ra')
+      }
+    } catch (error) {
+      setError(error.response?.data?.message || 'Có lỗi xảy ra khi quay gacha')
+    } finally {
+      setIsPulling(false)
+    }
+  }
+
   const getRarityColor = (rarity) => {
     const colors = {
       'N': '#808080', // Xám
@@ -188,15 +297,6 @@ function Gacha() {
       'X': '#212121' // Đen
     }
     return colors[rarity] || '#ffffff'
-  }
-
-  if (!user) {
-    return (
-      <div className="gacha">
-        <h1>🎰 Quay Gacha</h1>
-        <p>Vui lòng đăng nhập để quay gacha</p>
-      </div>
-    )
   }
 
   return (
@@ -224,6 +324,27 @@ function Gacha() {
             disabled={isPulling || ticketBalance < 10}
           >
             {isPulling ? 'Đang quay...' : 'Quay 10 (10 vé)'}
+          </button>
+        </div>
+
+        <div className="gacha-divider">
+          <span>HOẶC</span>
+        </div>
+
+        <div className="gacha-buttons">
+          <button 
+            className="gacha-btn single-pull-coin"
+            onClick={handleSinglePullWithCoins}
+            disabled={isPulling || coinBalance < 50}
+          >
+            {isPulling ? 'Đang quay...' : '💰 Quay đơn (50 coin)'}
+          </button>
+          <button 
+            className="gacha-btn multi-pull-coin"
+            onClick={handleMultiPullWithCoins}
+            disabled={isPulling || coinBalance < 450}
+          >
+            {isPulling ? 'Đang quay...' : '💰 Quay 10 (450 coin)'}
           </button>
         </div>
 
@@ -388,6 +509,12 @@ function Gacha() {
           </div>
         )}
       </div>
+
+      {/* Auth Modal */}
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => setShowAuthModal(false)} 
+      />
     </div>
   )
 }

@@ -13,6 +13,9 @@ function Admin() {
   const [selectedPhotos, setSelectedPhotos] = useState([])
   const [showUploadModal, setShowUploadModal] = useState(false)
   const [uploadFile, setUploadFile] = useState(null)
+  const [uploadFiles, setUploadFiles] = useState([])
+  const [uploadMode, setUploadMode] = useState('single') // 'single' or 'bulk'
+  const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0, uploading: false })
   const [uploadForm, setUploadForm] = useState({
     rarity: 'C',
     collectionId: ''
@@ -210,8 +213,17 @@ function Admin() {
       {activeTab === 'photos' && (
         <div className="admin-content">
           <div className="admin-actions">
-            <button onClick={() => setShowUploadModal(true)}>
+            <button onClick={() => {
+              setUploadMode('single')
+              setShowUploadModal(true)
+            }}>
               + Upload Ảnh Mới
+            </button>
+            <button onClick={() => {
+              setUploadMode('bulk')
+              setShowUploadModal(true)
+            }}>
+              📦 Upload Hàng Loạt
             </button>
             <button onClick={handleAssignPhotos} disabled={selectedPhotos.length === 0}>
               Gán {selectedPhotos.length} ảnh vào bộ sưu tập
@@ -515,23 +527,128 @@ function Admin() {
 
       {/* Upload Photo Modal */}
       {showUploadModal && (
-        <div className="modal-overlay" onClick={() => setShowUploadModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2>Upload Ảnh Mới</h2>
+        <div className="modal-overlay" onClick={() => {
+          if (!uploadProgress.uploading) {
+            setShowUploadModal(false)
+            setUploadFile(null)
+            setUploadFiles([])
+            setUploadForm({ rarity: 'C', collectionId: '' })
+            setUploadProgress({ current: 0, total: 0, uploading: false })
+          }
+        }}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto' }}>
+            <h2>{uploadMode === 'bulk' ? '📦 Upload Hàng Loạt Ảnh' : 'Upload Ảnh Mới'}</h2>
+            
+            {/* Mode Toggle */}
+            <div className="form-group" style={{ marginBottom: '1rem' }}>
+              <label>Chế độ upload:</label>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <button
+                  onClick={() => {
+                    setUploadMode('single')
+                    setUploadFile(null)
+                    setUploadFiles([])
+                  }}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    border: '2px solid',
+                    borderColor: uploadMode === 'single' ? '#667eea' : 'rgba(255,255,255,0.2)',
+                    background: uploadMode === 'single' ? 'rgba(102, 126, 234, 0.2)' : 'transparent',
+                    color: 'white',
+                    borderRadius: '8px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Đơn lẻ
+                </button>
+                <button
+                  onClick={() => {
+                    setUploadMode('bulk')
+                    setUploadFile(null)
+                    setUploadFiles([])
+                  }}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    border: '2px solid',
+                    borderColor: uploadMode === 'bulk' ? '#667eea' : 'rgba(255,255,255,0.2)',
+                    background: uploadMode === 'bulk' ? 'rgba(102, 126, 234, 0.2)' : 'transparent',
+                    color: 'white',
+                    borderRadius: '8px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Hàng loạt
+                </button>
+              </div>
+            </div>
+
             <div className="form-group">
-              <label>Chọn ảnh</label>
+              <label>{uploadMode === 'bulk' ? 'Chọn nhiều ảnh (cùng cấp độ hiếm)' : 'Chọn ảnh'}</label>
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => setUploadFile(e.target.files[0])}
+                multiple={uploadMode === 'bulk'}
+                onChange={(e) => {
+                  if (uploadMode === 'bulk') {
+                    const files = Array.from(e.target.files)
+                    setUploadFiles(files)
+                  } else {
+                    setUploadFile(e.target.files[0])
+                  }
+                }}
               />
-              {uploadFile && (
+              {uploadMode === 'single' && uploadFile && (
                 <div style={{ marginTop: '1rem' }}>
                   <img 
                     src={URL.createObjectURL(uploadFile)} 
                     alt="Preview" 
                     style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '8px' }}
                   />
+                </div>
+              )}
+              {uploadMode === 'bulk' && uploadFiles.length > 0 && (
+                <div style={{ marginTop: '1rem' }}>
+                  <p style={{ color: 'white', marginBottom: '0.5rem' }}>
+                    Đã chọn: <strong>{uploadFiles.length}</strong> ảnh
+                  </p>
+                  <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))', 
+                    gap: '0.5rem',
+                    maxHeight: '200px',
+                    overflowY: 'auto',
+                    padding: '0.5rem',
+                    background: 'rgba(255,255,255,0.05)',
+                    borderRadius: '8px'
+                  }}>
+                    {uploadFiles.map((file, index) => (
+                      <div key={index} style={{ position: 'relative' }}>
+                        <img 
+                          src={URL.createObjectURL(file)} 
+                          alt={`Preview ${index + 1}`}
+                          style={{ 
+                            width: '100%', 
+                            height: '80px', 
+                            objectFit: 'cover',
+                            borderRadius: '4px',
+                            border: '2px solid rgba(255,255,255,0.2)'
+                          }}
+                        />
+                        <span style={{
+                          position: 'absolute',
+                          top: '2px',
+                          right: '2px',
+                          background: 'rgba(0,0,0,0.7)',
+                          color: 'white',
+                          fontSize: '0.7rem',
+                          padding: '2px 4px',
+                          borderRadius: '4px'
+                        }}>
+                          {index + 1}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -560,60 +677,177 @@ function Admin() {
                 placeholder="Để trống nếu không gán"
               />
             </div>
+            {/* Upload Progress */}
+            {uploadProgress.uploading && (
+              <div className="form-group" style={{ 
+                background: 'rgba(102, 126, 234, 0.2)', 
+                padding: '1rem', 
+                borderRadius: '8px',
+                marginBottom: '1rem'
+              }}>
+                <p style={{ color: 'white', marginBottom: '0.5rem' }}>
+                  Đang upload: {uploadProgress.current} / {uploadProgress.total}
+                </p>
+                <div style={{
+                  width: '100%',
+                  height: '20px',
+                  background: 'rgba(255,255,255,0.1)',
+                  borderRadius: '10px',
+                  overflow: 'hidden'
+                }}>
+                  <div style={{
+                    width: `${(uploadProgress.current / uploadProgress.total) * 100}%`,
+                    height: '100%',
+                    background: 'linear-gradient(90deg, #667eea, #764ba2)',
+                    transition: 'width 0.3s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: '0.8rem',
+                    fontWeight: 'bold'
+                  }}>
+                    {Math.round((uploadProgress.current / uploadProgress.total) * 100)}%
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="modal-actions">
-              <button onClick={async () => {
-                if (!uploadFile) {
-                  alert('Vui lòng chọn ảnh')
-                  return
-                }
-                
-                try {
-                  const headers = {
-                    'Authorization': `Bearer ${token}`,
-                    'X-User-Id': user.userId,
-                    'Content-Type': 'multipart/form-data'
-                  }
-                  
-                  // Upload file
-                  const formData = new FormData()
-                  formData.append('file', uploadFile)
-                  
-                  const uploadResponse = await axios.post(
-                    'http://localhost:8080/api/upload/image',
-                    formData,
-                    { headers: { 'Authorization': `Bearer ${token}` } }
-                  )
-                  
-                  if (uploadResponse.data.url) {
-                    // Create photo record
-                    const photoData = {
-                      imageUrl: `http://localhost:8080${uploadResponse.data.url}`,
-                      rarity: uploadForm.rarity,
-                      collectionId: uploadForm.collectionId || null
+              <button 
+                onClick={async () => {
+                  if (uploadMode === 'single') {
+                    if (!uploadFile) {
+                      alert('Vui lòng chọn ảnh')
+                      return
                     }
                     
-                    await axios.post(
-                      'http://localhost:8080/api/admin/photos',
-                      photoData,
-                      { headers: { 'Authorization': `Bearer ${token}`, 'X-User-Id': user.userId } }
-                    )
+                    try {
+                      const headers = {
+                        'Authorization': `Bearer ${token}`,
+                        'X-User-Id': user.userId,
+                        'Content-Type': 'multipart/form-data'
+                      }
+                      
+                      // Upload file
+                      const formData = new FormData()
+                      formData.append('file', uploadFile)
+                      
+                      const uploadResponse = await axios.post(
+                        'http://localhost:8080/api/upload/image',
+                        formData,
+                        { headers: { 'Authorization': `Bearer ${token}` } }
+                      )
+                      
+                      if (uploadResponse.data.url) {
+                        // Create photo record
+                        const photoData = {
+                          imageUrl: `http://localhost:8080${uploadResponse.data.url}`,
+                          rarity: uploadForm.rarity,
+                          collectionId: uploadForm.collectionId || null
+                        }
+                        
+                        await axios.post(
+                          'http://localhost:8080/api/admin/photos',
+                          photoData,
+                          { headers: { 'Authorization': `Bearer ${token}`, 'X-User-Id': user.userId } }
+                        )
+                        
+                        setShowUploadModal(false)
+                        setUploadFile(null)
+                        setUploadForm({ rarity: 'C', collectionId: '' })
+                        fetchData()
+                        alert('Upload ảnh thành công!')
+                      }
+                    } catch (error) {
+                      console.error('Error uploading:', error)
+                      alert('Có lỗi xảy ra khi upload ảnh')
+                    }
+                  } else {
+                    // Bulk upload
+                    if (uploadFiles.length === 0) {
+                      alert('Vui lòng chọn ít nhất một ảnh')
+                      return
+                    }
                     
+                    setUploadProgress({ current: 0, total: uploadFiles.length, uploading: true })
+                    let successCount = 0
+                    let failCount = 0
+                    
+                    try {
+                      for (let i = 0; i < uploadFiles.length; i++) {
+                        const file = uploadFiles[i]
+                        try {
+                          // Upload file
+                          const formData = new FormData()
+                          formData.append('file', file)
+                          
+                          const uploadResponse = await axios.post(
+                            'http://localhost:8080/api/upload/image',
+                            formData,
+                            { headers: { 'Authorization': `Bearer ${token}` } }
+                          )
+                          
+                          if (uploadResponse.data.url) {
+                            // Create photo record
+                            const photoData = {
+                              imageUrl: `http://localhost:8080${uploadResponse.data.url}`,
+                              rarity: uploadForm.rarity,
+                              collectionId: uploadForm.collectionId || null
+                            }
+                            
+                            await axios.post(
+                              'http://localhost:8080/api/admin/photos',
+                              photoData,
+                              { headers: { 'Authorization': `Bearer ${token}`, 'X-User-Id': user.userId } }
+                            )
+                            
+                            successCount++
+                          }
+                        } catch (error) {
+                          console.error(`Error uploading file ${i + 1}:`, error)
+                          failCount++
+                        }
+                        
+                        setUploadProgress({ 
+                          current: i + 1, 
+                          total: uploadFiles.length, 
+                          uploading: true 
+                        })
+                      }
+                      
+                      setUploadProgress({ current: 0, total: 0, uploading: false })
+                      setShowUploadModal(false)
+                      setUploadFiles([])
+                      setUploadForm({ rarity: 'C', collectionId: '' })
+                      fetchData()
+                      
+                      alert(`Upload hoàn tất!\n✅ Thành công: ${successCount}\n❌ Thất bại: ${failCount}`)
+                    } catch (error) {
+                      console.error('Error in bulk upload:', error)
+                      setUploadProgress({ current: 0, total: 0, uploading: false })
+                      alert(`Có lỗi xảy ra!\n✅ Thành công: ${successCount}\n❌ Thất bại: ${failCount}`)
+                    }
+                  }
+                }}
+                disabled={uploadProgress.uploading}
+              >
+                {uploadProgress.uploading ? 'Đang upload...' : uploadMode === 'bulk' ? `Upload ${uploadFiles.length} ảnh` : 'Upload'}
+              </button>
+              <button 
+                onClick={() => {
+                  if (!uploadProgress.uploading) {
                     setShowUploadModal(false)
                     setUploadFile(null)
+                    setUploadFiles([])
                     setUploadForm({ rarity: 'C', collectionId: '' })
-                    fetchData()
-                    alert('Upload ảnh thành công!')
+                    setUploadProgress({ current: 0, total: 0, uploading: false })
                   }
-                } catch (error) {
-                  console.error('Error uploading:', error)
-                  alert('Có lỗi xảy ra khi upload ảnh')
-                }
-              }}>Upload</button>
-              <button onClick={() => {
-                setShowUploadModal(false)
-                setUploadFile(null)
-                setUploadForm({ rarity: 'C', collectionId: '' })
-              }}>Hủy</button>
+                }}
+                disabled={uploadProgress.uploading}
+              >
+                {uploadProgress.uploading ? 'Đang upload...' : 'Hủy'}
+              </button>
             </div>
           </div>
         </div>

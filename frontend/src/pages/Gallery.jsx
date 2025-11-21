@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import axios from 'axios'
 import './Gallery.css'
+import '../styles/CardFrames.css'
 
 function Gallery() {
   const { user, token } = useAuth()
@@ -80,6 +81,20 @@ function Gallery() {
     return colors[rarity] || '#ffffff'
   }
 
+  const getRarityFrameClass = (rarity) => {
+    const frameClasses = {
+      'N': 'frame-n',      // Nháp - Đen Trắng
+      'C': 'frame-c',      // Thường - Neon Tĩnh
+      'R': 'frame-r',      // Hiếm - Kim Loại Quét
+      'SR': 'frame-sr',    // Siêu Hiếm - Vàng Hô Hấp
+      'SSR': 'frame-ssr',  // Squad - Dòng Chảy Gradient
+      'UR': 'frame-ur',    // Cực Phẩm - RGB Gamer
+      'L': 'frame-l',      // Huyền Thoại - Lỗi Kỹ Thuật
+      'X': 'frame-x'       // Bí Mật - Kính Cường Lực
+    }
+    return frameClasses[rarity] || ''
+  }
+
   if (loading) {
     return <div className="gallery-loading">Đang tải...</div>
   }
@@ -101,7 +116,7 @@ function Gallery() {
           return (
             <div 
               key={photo.photoId} 
-              className={`photo-card ${owned ? 'owned' : 'locked'}`}
+              className={`photo-card ${owned ? 'owned' : 'locked'} ${getRarityFrameClass(photo.rarity)}`}
               onClick={() => {
                 if (owned) {
                   setSelectedPhoto(photo)
@@ -117,14 +132,16 @@ function Gallery() {
               {quantity > 0 && (
                 <div className="quantity-indicator">x{quantity}</div>
               )}
-              <img 
-                src={photo.imageUrl} 
-                alt={`Photo ${photo.photoId}`}
-                className={`photo-image ${owned ? '' : 'locked-image'}`}
-                onError={(e) => {
-                  e.target.src = 'https://via.placeholder.com/200?text=No+Image'
-                }}
-              />
+              <div className="photo-image-wrapper">
+                <img 
+                  src={photo.imageUrl} 
+                  alt={`Photo ${photo.photoId}`}
+                  className={`photo-image ${owned ? '' : 'locked-image'}`}
+                  onError={(e) => {
+                    e.target.src = 'https://via.placeholder.com/200?text=No+Image'
+                  }}
+                />
+              </div>
               {!owned && (
                 <div className="locked-overlay">
                   <span className="lock-icon">🔒</span>

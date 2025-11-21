@@ -57,6 +57,14 @@ function Layout({ children }) {
             </li>
             <li>
               <Link 
+                to="/marketplace" 
+                className={location.pathname === '/marketplace' ? 'active' : ''}
+              >
+                🛒 Chợ Đen
+              </Link>
+            </li>
+            <li>
+              <Link 
                 to="/profile" 
                 className={location.pathname === '/profile' ? 'active' : ''}
               >

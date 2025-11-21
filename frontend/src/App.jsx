@@ -8,6 +8,7 @@ import Gacha from './pages/Gacha'
 import Collection from './pages/Collection'
 import Profile from './pages/Profile'
 import Admin from './pages/Admin'
+import Marketplace from './pages/Marketplace'
 import './App.css'
 
 function App() {
@@ -22,17 +23,35 @@ function App() {
         <Route
           path="/*"
           element={
-            <ProtectedRoute>
-              <Layout>
-                <Routes>
-                  <Route path="/gallery" element={<Gallery />} />
-                  <Route path="/gacha" element={<Gacha />} />
-                  <Route path="/collection" element={<Collection />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/admin" element={<Admin />} />
-                </Routes>
-              </Layout>
-            </ProtectedRoute>
+            <Layout>
+              <Routes>
+                {/* Guest có thể xem Gallery và Marketplace */}
+                <Route path="/gallery" element={<Gallery />} />
+                <Route path="/marketplace" element={<Marketplace />} />
+                
+                {/* Các trang cần đăng nhập */}
+                <Route path="/gacha" element={
+                  <ProtectedRoute>
+                    <Gacha />
+                  </ProtectedRoute>
+                } />
+                <Route path="/collection" element={
+                  <ProtectedRoute>
+                    <Collection />
+                  </ProtectedRoute>
+                } />
+                <Route path="/profile" element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                } />
+                <Route path="/admin" element={
+                  <ProtectedRoute>
+                    <Admin />
+                  </ProtectedRoute>
+                } />
+              </Routes>
+            </Layout>
           }
         />
       </Routes>
